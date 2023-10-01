@@ -159,25 +159,21 @@ WHERE rnk = 1;
 
 /* 8. What is the total items and amount spent for each 
 member before they became a member */
-SELECT 
+SELECT
     s.customer_id,
-    COUNT(*) AS total_purchases,
-    SUM(m.price) AS amount_spent
+    COUNT(product_name) AS total_items_purchased,
+    SUM(price) AS amount_spent
 FROM sales s
-JOIN menu m
-ON s.product_id = m.product_id
-WHERE s.order_date < (
-    SELECT join_date
-    FROM members
-    WHERE customer_id = s.customer_id
-)
-GROUP BY s.customer_id;  
+JOIN menu m ON s.product_id = m.product_id
+JOIN members mem ON s.customer_id = mem.customer_id
+WHERE s.order_date < mem.join_date
+GROUP BY s.customer_id;
 
 /* 9. If each $1 spent equates to 10 points and sushi has a 
 2x points multiplier - how many points would each customer have? */
 SELECT 
     s.customer_id,
-    SUM(CASE WHEN m.product_name = 'sushi' THEN m.price * 20
+    SUM(CASE WHEN m.product_name = 'sushi' THEN m.price * 10 * 2
     ELSE m.price * 10 
     END) AS total_points
 FROM sales s 
@@ -188,26 +184,34 @@ GROUP BY s.customer_id;
 (including their join date) they earn 2x points on all items,
  not just sushi - how many points do customer A and B have at 
  the end of January? */
- WITH joined_data AS(
-    SELECT 
-        s.customer_id,
-        s.order_date,
-        m.price,
-        mem.join_date
-    FROM sales s
-    JOIN menu m ON s.product_id = m.product_id
-    JOIN members mem ON s.customer_id = mem.customer_id
-    WHERE s.order_date >= mem.join_date
- )
- SELECT customer_id,
-    SUM(CASE 
-        WHEN order_date <= DATE_ADD(join_date, INTERVAL 7 DAY ) THEN price * 20
-        ELSE price * 10
-    END) AS jan_total_points
-FROM joined_data
-WHERE order_date <= '2021-01-31'
-GROUP BY customer_id
-ORDER BY customer_id;
+SELECT 
+    s.customer_id,
+    SUM(CASE
+            WHEN s.order_date BETWEEN mem.join_date AND DATE_ADD(mem.join_date, INTERVAL 6 DAY) THEN m.price * 10 *2
+            WHEN m.product_name = 'sushi' THEN m.price * 10 * 2
+            ELSE m.price * 10
+        END) AS total_points
+FROM sales s 
+JOIN menu m ON s.product_id = m.product_id
+JOIN members mem ON s.customer_id = mem.customer_id
+WHERE s.order_date <= '2021-01-31'
+GROUP BY s.customer_id;
+
+-- Bonus Question
+SELECT
+    s.customer_id,
+    s.order_date,
+    m.product_name,
+    m.price,
+    CASE
+        WHEN s.order_date < mem.join_date THEN 'N'
+        WHEN join_date IS NULL THEN 'N'
+        ELSE 'Y'
+    END AS member
+FROM sales s
+JOIN menu m ON s.product_id = m.product_id
+LEFT JOIN members mem ON s.customer_id = mem.customer_id
+ORDER BY s.customer_id, order_date, price DESC;
 
 
 
