@@ -1,9 +1,5 @@
-# 8-Weeks-SQL-Challenge Case Study 1
-It was a wonderful experience getting to test my SQL skills by taking on the first case study of the 8weekssqlchallenge.
-# Problem Statement
-" Danny wants to use the data to answer a few simple questions about his customers, especially about their visiting patterns, how much money they’ve spent and also which menu items are their favourite. Having this deeper connection with his customers will help him deliver a better and more personalised experience for his loyal customers.
-
-He plans on using these insights to help him decide whether he should expand the existing customer loyalty program - additionally he needs help to generate some basic datasets so his team can easily inspect the data without needing to use SQL."
+# Case Study 1 - Danny's Diner
+This case study is part of the [8weekssqlchallenge by Danny Ma](https://8weeksqlchallenge.com/case-study-1/). Danny has a restaurant that sells 3 of his favourite foods. He has captured some very basic data from their few months of operation and wants us the data  to answer questions about his customers, especially about their visiting patterns, how much money they’ve spent and which menu items are their favourite. He understands that this deeper connection with his customers will help him deliver a better and more personalised experience for his loyal customers.
 
 Customer data is stored in 3 tables:
 * Sales table columns: customer_id, order_date, product_id
@@ -23,4 +19,4 @@ Customer data is stored in 3 tables:
    
  [I've shared my insights from this case study in this article](https://medium.com/@dianainjelwa/8-weeks-sql-challenge-case-study-1-ba5bac2ea7f0)
 
-Tools used: MySQL
+Tools: MySQL
